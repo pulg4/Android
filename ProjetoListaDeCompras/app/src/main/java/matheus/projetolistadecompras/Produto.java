@@ -2,11 +2,20 @@ package matheus.projetolistadecompras;
 
 import java.util.ArrayList;
 
-public class Produto {
+import io.realm.Realm;
+import io.realm.RealmObject;
+import io.realm.annotations.PrimaryKey;
+
+public class Produto extends RealmObject {
+    @PrimaryKey
+    private Integer id;
     private Integer quantidade;
     private String nome;
     private boolean perecivel;
     private String categoria;
+
+    public Produto()
+    {}
 
     public Produto(Main2Activity listaProdutosActivity, int simple_list_item_checked, ArrayList<Produto> produtos) {
     }
@@ -49,5 +58,13 @@ public class Produto {
 
     public void setCategoria(String categoria) {
         this.categoria = categoria;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

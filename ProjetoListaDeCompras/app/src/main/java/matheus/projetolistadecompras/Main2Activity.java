@@ -13,11 +13,15 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 
+import io.realm.Realm;
+import io.realm.RealmResults;
+
 public class Main2Activity extends AppCompatActivity {
 
     ProdutosAdapter adapter;
     ListView listView;
     ArrayList<Produto> listaProdutos = new ArrayList<Produto>();
+    Realm realm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,6 +38,13 @@ public class Main2Activity extends AppCompatActivity {
         listView.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
 
         listView.setTextFilterEnabled(true);
+
+        Realm.init(this);
+        realm = Realm.getDefaultInstance();
+
+        final RealmResults<Produto> produtosRealmResults = realm.where(Produto.class).findAll();
+
+        listaProdutos.addAll(realm.copyFromRealm(produtosRealmResults));
 
         adapter = new ProdutosAdapter(this,android.R.layout.simple_list_item_checked, listaProdutos);
 
@@ -67,6 +78,13 @@ public class Main2Activity extends AppCompatActivity {
                 if(nomeProduto.isEmpty()){
                     Toast.makeText(Main2Activity.this, "Nome do produto obrigatorio", Toast.LENGTH_SHORT).show();
                 } else {
+                    int id = (int)realm.where(Produto.class).count()+1;
+                    p.setId(id);
+
+                    realm.beginTransaction();
+                    realm.copyToRealm(p);
+                    realm.commitTransaction();
+
                     listaProdutos.add(p);
 
                     adapter.notifyDataSetChanged();
